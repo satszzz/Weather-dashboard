@@ -18,6 +18,7 @@ const errorEl = document.getElementById('error');
 const errorMessage = document.getElementById('error-message');
 const retryBtn = document.getElementById('retry-btn');
 const weatherResults = document.getElementById('weather-results');
+const welcomeEl = document.getElementById('welcome');
 const lastSearchedEl = document.getElementById('last-searched');
 const lastCitySpan = document.getElementById('last-city');
 
@@ -29,6 +30,7 @@ const temperatureEl = document.getElementById('temperature');
 const windSpeedEl = document.getElementById('wind-speed');
 const humidityEl = document.getElementById('humidity');
 const feelsLikeEl = document.getElementById('feels-like');
+const visibilityEl = document.getElementById('visibility');
 
 // ===================================
 // API Configuration
@@ -80,7 +82,7 @@ const weatherCodeMap = {
  * @param {HTMLElement} element - The element to show
  */
 function showElement(element) {
-    element.classList.remove('hidden');
+    if (element) element.classList.remove('hidden');
 }
 
 /**
@@ -88,16 +90,17 @@ function showElement(element) {
  * @param {HTMLElement} element - The element to hide
  */
 function hideElement(element) {
-    element.classList.add('hidden');
+    if (element) element.classList.add('hidden');
 }
 
 /**
- * Clears all result states (loading, error, weather)
+ * Clears all result states (loading, error, weather, welcome)
  */
 function clearAllStates() {
     hideElement(loadingEl);
     hideElement(errorEl);
     hideElement(weatherResults);
+    hideElement(welcomeEl);
 }
 
 /**
@@ -161,7 +164,7 @@ function getLastCity() {
  * @param {string} cityName - The city name to display
  */
 function updateLastSearchedDisplay(cityName) {
-    if (cityName) {
+    if (cityName && lastCitySpan && lastSearchedEl) {
         lastCitySpan.textContent = cityName;
         showElement(lastSearchedEl);
     }
@@ -179,22 +182,22 @@ function updateLastSearchedDisplay(cityName) {
  */
 async function getCoordinates(cityName) {
     const url = `${GEOCODING_API}?name=${encodeURIComponent(cityName)}&count=1&language=en&format=json`;
-    
+
     const response = await fetch(url);
-    
+
     if (!response.ok) {
         throw new Error('Failed to connect to geocoding service');
     }
-    
+
     const data = await response.json();
-    
+
     // Check if any results were found
     if (!data.results || data.results.length === 0) {
         throw new Error(`City "${cityName}" not found. Please check the spelling and try again.`);
     }
-    
+
     const location = data.results[0];
-    
+
     return {
         lat: location.latitude,
         lon: location.longitude,
@@ -210,20 +213,20 @@ async function getCoordinates(cityName) {
  * @returns {Promise<Object>} Weather data
  */
 async function getWeatherData(lat, lon) {
-    const url = `${WEATHER_API}?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&timezone=auto`;
-    
+    const url = `${WEATHER_API}?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,visibility&timezone=auto`;
+
     const response = await fetch(url);
-    
+
     if (!response.ok) {
         throw new Error('Failed to fetch weather data');
     }
-    
+
     const data = await response.json();
-    
+
     if (!data.current) {
         throw new Error('Weather data not available');
     }
-    
+
     return data.current;
 }
 
@@ -237,30 +240,30 @@ async function fetchWeather(cityName) {
         showError('Please enter a city name');
         return;
     }
-    
+
     // Clean the city name
     const cleanCityName = cityName.trim();
-    
+
     // Show loading state
     showLoading();
-    
+
     try {
         // Step 1: Get coordinates from city name
         const location = await getCoordinates(cleanCityName);
-        
+
         // Step 2: Get weather data using coordinates
         const weatherData = await getWeatherData(location.lat, location.lon);
-        
+
         // Step 3: Display the weather
         displayWeather(location, weatherData);
-        
+
         // Step 4: Save to localStorage
-        const displayName = location.country 
-            ? `${location.name}, ${location.country}` 
+        const displayName = location.country
+            ? `${location.name}, ${location.country}`
             : location.name;
         saveLastCity(displayName);
         updateLastSearchedDisplay(displayName);
-        
+
     } catch (error) {
         console.error('Error fetching weather:', error);
         showError(error.message || 'Something went wrong. Please try again.');
@@ -274,15 +277,15 @@ async function fetchWeather(cityName) {
  */
 function displayWeather(location, weatherData) {
     clearAllStates();
-    
+
     // Get weather info from code
     const weatherInfo = getWeatherInfo(weatherData.weather_code);
-    
+
     // Format display name with country if available
-    const displayName = location.country 
-        ? `${location.name}, ${location.country}` 
+    const displayName = location.country
+        ? `${location.name}, ${location.country}`
         : location.name;
-    
+
     // Update DOM elements
     cityNameEl.textContent = displayName;
     weatherConditionEl.textContent = weatherInfo.description;
@@ -291,7 +294,15 @@ function displayWeather(location, weatherData) {
     windSpeedEl.textContent = `${weatherData.wind_speed_10m} km/h`;
     humidityEl.textContent = `${weatherData.relative_humidity_2m}%`;
     feelsLikeEl.textContent = `${Math.round(weatherData.apparent_temperature)}°C`;
-    
+
+    // Handle visibility (convert from meters to km)
+    if (visibilityEl && weatherData.visibility) {
+        const visibilityKm = (weatherData.visibility / 1000).toFixed(1);
+        visibilityEl.textContent = `${visibilityKm} km`;
+    } else if (visibilityEl) {
+        visibilityEl.textContent = 'N/A';
+    }
+
     // Show the weather card
     showElement(weatherResults);
 }
@@ -307,10 +318,10 @@ function displayWeather(location, weatherData) {
 function handleFormSubmit(event) {
     // Prevent default form submission (page reload)
     event.preventDefault();
-    
+
     // Get the city name from input
     const cityName = cityInput.value;
-    
+
     // Fetch weather for the city
     fetchWeather(cityName);
 }
@@ -323,7 +334,8 @@ function handleRetry() {
     if (cityName) {
         fetchWeather(cityName);
     } else {
-        hideElement(errorEl);
+        clearAllStates();
+        showElement(welcomeEl);
         cityInput.focus();
     }
 }
@@ -348,18 +360,21 @@ retryBtn.addEventListener('click', handleRetry);
 function init() {
     // Check for last searched city in localStorage
     const lastCity = getLastCity();
-    
+
     if (lastCity) {
         // Show the last city in the "last searched" display
         updateLastSearchedDisplay(lastCity);
-        
+
         // Optionally pre-fill the input with the last city
         cityInput.value = lastCity;
-        
+
         // Automatically fetch weather for the last city
         fetchWeather(lastCity);
+    } else {
+        // Show welcome state
+        showElement(welcomeEl);
     }
-    
+
     // Focus the search input for better UX
     cityInput.focus();
 }
