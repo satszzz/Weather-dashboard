@@ -1,16 +1,7 @@
-/**
- * Weather Dashboard - JavaScript
- * 
- * This script handles:
- * - Fetching weather data from Open-Meteo API
- * - DOM manipulation to display results
- * - Loading and error states
- * - localStorage for persisting last searched city
- */
-
-// ===================================
+ 
+ 
 // DOM Element Selection
-// ===================================
+ 
 const searchForm = document.getElementById('search-form');
 const cityInput = document.getElementById('city-input');
 const loadingEl = document.getElementById('loading');
@@ -30,15 +21,14 @@ const windSpeedEl = document.getElementById('wind-speed');
 const humidityEl = document.getElementById('humidity');
 const feelsLikeEl = document.getElementById('feels-like');
 
-// ===================================
+ 
 // API Configuration
-// ===================================
+ 
 const GEOCODING_API = 'https://geocoding-api.open-meteo.com/v1/search';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
-
-// ===================================
+ 
 // Weather Code Mapping
-// ===================================
+ 
 // Maps Open-Meteo weather codes to descriptions and icons
 const weatherCodeMap = {
     0: { description: 'Clear sky', icon: '☀️' },
@@ -71,10 +61,7 @@ const weatherCodeMap = {
     99: { description: 'Thunderstorm with heavy hail', icon: '⛈️' }
 };
 
-// ===================================
-// Utility Functions
-// ===================================
-
+ 
 /**
  * Shows an element by removing the 'hidden' class
  * @param {HTMLElement} element - The element to show
@@ -127,9 +114,9 @@ function getWeatherInfo(code) {
     return weatherCodeMap[code] || { description: 'Unknown', icon: '🌡️' };
 }
 
-// ===================================
+ 
 // localStorage Functions
-// ===================================
+ 
 
 /**
  * Saves the last searched city to localStorage
@@ -166,10 +153,9 @@ function updateLastSearchedDisplay(cityName) {
         showElement(lastSearchedEl);
     }
 }
-
-// ===================================
+ 
 // API Functions
-// ===================================
+ 
 
 /**
  * Fetches coordinates for a city name using Geocoding API
@@ -296,10 +282,7 @@ function displayWeather(location, weatherData) {
     showElement(weatherResults);
 }
 
-// ===================================
-// Event Handlers
-// ===================================
-
+ 
 /**
  * Handles form submission
  * @param {Event} event - The submit event
@@ -327,24 +310,13 @@ function handleRetry() {
         cityInput.focus();
     }
 }
-
-// ===================================
-// Event Listeners
-// ===================================
-
-// Form submission
+ 
 searchForm.addEventListener('submit', handleFormSubmit);
 
 // Retry button
 retryBtn.addEventListener('click', handleRetry);
 
-// ===================================
-// Initialization
-// ===================================
-
-/**
- * Initializes the application on page load
- */
+ 
 function init() {
     // Check for last searched city in localStorage
     const lastCity = getLastCity();

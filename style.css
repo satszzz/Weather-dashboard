@@ -1,6 +1,4 @@
-/* ===================================
-   CSS Custom Properties (Variables)
-   =================================== */
+ 
 :root {
     /* Colors */
     --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -41,10 +39,7 @@
     /* Font */
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
-
-/* ===================================
-   Reset & Base Styles
-   =================================== */
+ 
 *, *::before, *::after {
     margin: 0;
     padding: 0;
@@ -66,9 +61,7 @@ body {
     position: relative;
 }
 
-/* ===================================
-   Background Decoration
-   =================================== */
+ 
 .bg-decoration {
     position: fixed;
     top: 0;
@@ -126,10 +119,7 @@ body {
         transform: translate(-20px, 20px) scale(0.95);
     }
 }
-
-/* ===================================
-   Container & Layout
-   =================================== */
+ 
 .container {
     max-width: 600px;
     margin: 0 auto;
@@ -140,9 +130,7 @@ body {
     align-items: center;
 }
 
-/* ===================================
-   Header Styles
-   =================================== */
+ 
 .header {
     text-align: center;
     margin-bottom: var(--spacing-xl);
@@ -194,9 +182,7 @@ body {
     margin-top: var(--spacing-xs);
 }
 
-/* ===================================
-   Search Section
-   =================================== */
+ 
 .search-section {
     width: 100%;
     margin-bottom: var(--spacing-lg);
@@ -281,10 +267,7 @@ body {
 .search-btn:active {
     transform: translateY(0);
 }
-
-/* ===================================
-   Loading State
-   =================================== */
+ 
 .loading {
     display: flex;
     flex-direction: column;
@@ -309,9 +292,7 @@ body {
     }
 }
 
-/* ===================================
-   Error State
-   =================================== */
+ 
 .error-container {
     display: flex;
     flex-direction: column;
@@ -360,9 +341,9 @@ body {
     color: var(--text-primary);
 }
 
-/* ===================================
-   Weather Card
-   =================================== */
+ 
+    
+ 
 .weather-card {
     width: 100%;
     background: var(--bg-card);
@@ -492,9 +473,9 @@ body {
     color: var(--text-primary);
 }
 
-/* ===================================
-   Last Searched
-   =================================== */
+ 
+/* Last Searched */
+   
 .last-searched {
     margin-top: var(--spacing-lg);
     padding: var(--spacing-sm) var(--spacing-md);
@@ -509,9 +490,7 @@ body {
     font-weight: 500;
 }
 
-/* ===================================
-   Footer
-   =================================== */
+/*  Footer */
 .footer {
     text-align: center;
     padding: var(--spacing-md);
@@ -530,16 +509,12 @@ body {
     text-decoration: underline;
 }
 
-/* ===================================
-   Utility Classes
-   =================================== */
+/*footer */
 .hidden {
     display: none !important;
 }
 
-/* ===================================
-   Responsive Design
-   =================================== */
+/*  Responsive Design */
 @media (max-width: 600px) {
     .container {
         padding: var(--spacing-md);
