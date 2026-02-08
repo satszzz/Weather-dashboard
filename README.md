@@ -2,7 +2,8 @@
 
 A modern, responsive weather dashboard web application that fetches real-time weather data for any city worldwide. Built with vanilla HTML, CSS, and JavaScript as part of learning JavaScript fundamentals, DOM manipulation, and API integration.
 
-![Weather Dashboard Preview](https://via.placeholder.com/800x400/667eea/ffffff?text=Weather+Dashboard)
+🔗 Live Demo:
+👉 https://satszzz.github.io/Weather-dashboard/
 
 ## ✨ Features
 
